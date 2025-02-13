@@ -6,7 +6,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame channel:(FlutterMethodChannel*)channel
 {
-    NSLog(@"Calling Constructor");
     self = [super initWithFrame:frame];
     if(self){
         _channel = channel;
@@ -17,19 +16,17 @@
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
     if (action == @selector(paste:))
+        // Always show the paste button
         return YES;
     else
+        // Leave the rest to default behavior
         return [super canPerformAction:action withSender:sender];
 }
 
 - (void)paste:(id)sender
 {
-    NSLog(@"IN HERE");
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    // NSLog(@"%i", pasteboard.numberOfItems);
-    // NSLog(@"%@", pasteboard.items);
     if (pasteboard.image) {
-        NSLog(@"This is image");
         // If the file is GIF, we have to look for "com.compuserve.gif" and deal with it with data
         // For the rest of the images (and GIF for now), convert them to PNG and send them as base64
 
@@ -42,7 +39,6 @@
         // Send to Flutter
         [_channel invokeMethod:@"onImagesPasted" arguments:@{ @"data": flutterData }];
     } else {
-        NSLog(@"This is NOT image");
         [super paste:sender];
     }
 }
