@@ -115,6 +115,7 @@ class NativeTextInput extends StatefulWidget {
     this.onEditingComplete,
     this.onSubmitted,
     this.onTap,
+    this.onImagesPasted,
   }) : super(key: key);
 
   /// Controlling the text being edited
@@ -228,6 +229,9 @@ class NativeTextInput extends StatefulWidget {
   ///
   /// Default: null
   final VoidCallback? onTap;
+
+  ///
+  final void Function(Uint8List data)? onImagesPasted;
 
   @override
   State<StatefulWidget> createState() => _NativeTextInputState();
@@ -482,7 +486,7 @@ class _NativeTextInputState extends State<NativeTextInput> {
       params = {
         ...params,
         "placeholderFontFamily":
-        widget.iosOptions?.placeholderStyle?.fontFamily.toString(),
+            widget.iosOptions?.placeholderStyle?.fontFamily.toString(),
       };
     }
 
@@ -546,6 +550,12 @@ class _NativeTextInputState extends State<NativeTextInput> {
 
       case "singleTapRecognized":
         _singleTapRecognized();
+
+      case "onImagesPasted":
+        final Uint8List? data = call.arguments["data"];
+        if (data case final data?) {
+          _onImagesPasted(data);
+        }
     }
 
     throw MissingPluginException(
@@ -605,6 +615,10 @@ class _NativeTextInputState extends State<NativeTextInput> {
   }
 
   void _singleTapRecognized() => widget.onTap?.call();
+
+  void _onImagesPasted(Uint8List data) {
+    widget.onImagesPasted?.call(data);
+  }
 
   static const Duration _caretAnimationDuration = Duration(milliseconds: 100);
   static const Curve _caretAnimationCurve = Curves.fastOutSlowIn;
