@@ -231,7 +231,7 @@ class NativeTextInput extends StatefulWidget {
   final VoidCallback? onTap;
 
   ///
-  final void Function(Uint8List data)? onImagesPasted;
+  final void Function(List<Uint8List> data)? onImagesPasted;
 
   @override
   State<StatefulWidget> createState() => _NativeTextInputState();
@@ -552,9 +552,9 @@ class _NativeTextInputState extends State<NativeTextInput> {
         _singleTapRecognized();
 
       case "onImagesPasted":
-        final Uint8List? data = call.arguments["data"];
-        if (data case final data?) {
-          _onImagesPasted(data);
+        if (call.arguments["data"] case final List<Object?> data?) {
+          final result = data.whereType<Uint8List>().toList();
+          _onImagesPasted(result);
         }
     }
 
@@ -616,7 +616,7 @@ class _NativeTextInputState extends State<NativeTextInput> {
 
   void _singleTapRecognized() => widget.onTap?.call();
 
-  void _onImagesPasted(Uint8List data) {
+  void _onImagesPasted(List<Uint8List> data) {
     widget.onImagesPasted?.call(data);
   }
 

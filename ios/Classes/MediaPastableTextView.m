@@ -26,18 +26,18 @@
 - (void)paste:(id)sender
 {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    // Only Check the first image if it's an image
     if (pasteboard.image) {
-        // If the file is GIF, we have to look for "com.compuserve.gif" and deal with it with data
-        // For the rest of the images (and GIF for now), convert them to PNG and send them as base64
-
-        // Try this out with 1 image first
-        UIImage *image = pasteboard.image;
-        // to Png
-        NSData *imageData = UIImagePNGRepresentation(image);
-        // Convert to FlutterStandardTypedData
-        FlutterStandardTypedData *flutterData = [FlutterStandardTypedData typedDataWithBytes:imageData];
-        // Send to Flutter
-        [_channel invokeMethod:@"onImagesPasted" arguments:@{ @"data": flutterData }];
+        NSArray *data = [NSArray array];
+        for(NSObject* image in pasteboard.images){
+            // turn it into UIImagePNGRepresentation
+            NSData *imageData = UIImagePNGRepresentation(image);
+            // Convert to FlutterStandardTypedData
+            FlutterStandardTypedData *flutterData = [FlutterStandardTypedData typedDataWithBytes:imageData];
+            // Add to the array
+            data = [data arrayByAddingObject:flutterData];
+        }
+        [_channel invokeMethod:@"onImagesPasted" arguments:@{ @"data": data }];
     } else {
         [super paste:sender];
     }

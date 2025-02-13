@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final FocusNode _focusNode = FocusNode();
-  Uint8List? imageData;
+  List<Uint8List>? imageData;
 
   _onChangeText(value) => debugPrint("_onChangeText: $value");
   _onSubmittedText(value) => debugPrint("_onSubmittedText: $value");
@@ -113,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                 onSubmitted: _onSubmittedText,
                 focusNode: _focusNode,
                 onImagesPasted: (data) {
+                  print('here');
                   setState(() {
                     imageData = data;
                   });
@@ -128,7 +129,11 @@ class _HomePageState extends State<HomePage> {
                       builder: (_) => const MoreUseCaseListingPage()));
                 }),
           ),
-          if (imageData != null) Image.memory(imageData!),
+          if (imageData != null)
+            ...List.generate(
+              imageData!.length,
+              (index) => Image.memory(imageData![index]),
+            ),
         ],
       ),
     );
