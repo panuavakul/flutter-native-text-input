@@ -116,6 +116,8 @@ class NativeTextInput extends StatefulWidget {
     this.onSubmitted,
     this.onTap,
     this.onImagesPasted,
+    this.alwayEnablePaste,
+    this.maxImagesPasted,
   }) : super(key: key);
 
   /// Controlling the text being edited
@@ -229,6 +231,20 @@ class NativeTextInput extends StatefulWidget {
   ///
   /// Default: null
   final VoidCallback? onTap;
+
+  /// Always enable paste button
+  ///
+  /// Not implemented yet on Android (Yet).
+  ///
+  /// Default: false
+  final bool? alwayEnablePaste;
+
+  /// Maxium image that will be passed to `onImagesPasted` callback
+  ///
+  /// Not implemented yet on Android (Yet).
+  ///
+  /// Default: null
+  final int? maxImagesPasted;
 
   ///
   final void Function(List<Uint8List> data)? onImagesPasted;
@@ -429,6 +445,8 @@ class _NativeTextInputState extends State<NativeTextInput> {
       "keyboardAppearance": widget.iosOptions?.keyboardAppearance.toString(),
       "keyboardType": widget.keyboardType.toString(),
       "width": constraints.maxWidth,
+      "alwayEnablePaste": widget.alwayEnablePaste ?? false,
+      "maxImagesPasted": widget.maxImagesPasted,
     };
 
     if (widget.style != null && widget.style?.fontSize != null) {

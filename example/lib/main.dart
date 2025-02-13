@@ -112,6 +112,8 @@ class _HomePageState extends State<HomePage> {
                 onChanged: _onChangeText,
                 onSubmitted: _onSubmittedText,
                 focusNode: _focusNode,
+                maxImagesPasted: 4,
+                alwayEnablePaste: true,
                 onImagesPasted: (data) {
                   setState(() {
                     imageData = data;

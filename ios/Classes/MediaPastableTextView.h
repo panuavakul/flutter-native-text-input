@@ -5,7 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MediaPastableTextView : UITextView
 
-- (instancetype)initWithFrame:(CGRect)frame channel:(FlutterMethodChannel*)channel;
+- (instancetype)initWithFrame:(CGRect)frame channel:(FlutterMethodChannel*)channel arguments:(id _Nullable)args;
 
 @end
 

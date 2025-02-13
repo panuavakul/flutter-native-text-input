@@ -34,7 +34,7 @@
         _viewId = viewId;
         _args = args;
         
-        _textView = [[MediaPastableTextView alloc] initWithFrame:frame channel:_channel ];
+        _textView = [[MediaPastableTextView alloc] initWithFrame:frame channel:_channel arguments:args];
         _textView.backgroundColor = UIColor.clearColor;
         _textView.keyboardAppearance = [self keyboardAppearanceFromString:args[@"keyboardAppearance"]];
         _textView.keyboardType = [self keyboardTypeFromString:args[@"keyboardType"]];
