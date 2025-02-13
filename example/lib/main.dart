@@ -113,7 +113,6 @@ class _HomePageState extends State<HomePage> {
                 onSubmitted: _onSubmittedText,
                 focusNode: _focusNode,
                 onImagesPasted: (data) {
-                  print('here');
                   setState(() {
                     imageData = data;
                   });
