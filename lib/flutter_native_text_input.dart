@@ -247,7 +247,7 @@ class NativeTextInput extends StatefulWidget {
   final int? maxImagesPasted;
 
   ///
-  final void Function(List<Uint8List> data)? onImagesPasted;
+  final Future<void> Function(Future<List<Uint8List>> pasting)? onImagesPasted;
 
   @override
   State<StatefulWidget> createState() => _NativeTextInputState();
@@ -299,6 +299,7 @@ class _NativeTextInputState extends State<NativeTextInput> {
   bool get _isMultiline => widget.maxLines == 0 || widget.maxLines > 1;
   double _lineHeight = 22.0;
   double _contentHeight = 22.0;
+  Completer<List<Uint8List>>? _imagePasteCompleter;
 
   @override
   void initState() {
@@ -569,10 +570,15 @@ class _NativeTextInputState extends State<NativeTextInput> {
       case "singleTapRecognized":
         _singleTapRecognized();
 
+      case "startImagesPaste":
+        widget.onImagesPasted?.call(_processImagesPaste());
+
       case "onImagesPasted":
         if (call.arguments["data"] case final List<Object?> data?) {
           final result = data.whereType<Uint8List>().toList();
-          _onImagesPasted(result);
+          _imagePasteCompleter?.complete(result);
+          _imagePasteCompleter = null;
+          _imagePasteCompleter = null;
         }
     }
 
@@ -634,8 +640,13 @@ class _NativeTextInputState extends State<NativeTextInput> {
 
   void _singleTapRecognized() => widget.onTap?.call();
 
-  void _onImagesPasted(List<Uint8List> data) {
-    widget.onImagesPasted?.call(data);
+  Future<List<Uint8List>> _processImagesPaste() async {
+    _imagePasteCompleter = Completer();
+    if (_imagePasteCompleter case final completer?) {
+      return completer.future;
+    } else {
+      throw Exception("Unexpected image paste completer is null");
+    }
   }
 
   static const Duration _caretAnimationDuration = Duration(milliseconds: 100);

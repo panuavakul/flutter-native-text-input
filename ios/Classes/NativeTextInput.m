@@ -2,10 +2,6 @@
 #import "NativeTextInputDelegate.h"
 #import "MediaPastableTextView.h"
 
-// @interface UITextView(Placeholder)
-// @property(nullable, nonatomic, copy) NSAttributedString *attributedPlaceholder;
-// @end
-
 @interface MediaPastableTextView(Placeholder)
 @property(nullable, nonatomic, copy) NSAttributedString *attributedPlaceholder;
 @end

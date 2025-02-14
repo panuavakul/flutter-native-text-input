@@ -33,22 +33,28 @@
 - (void)paste:(id)sender
 {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    // Only Check the first image if it's an image
+
+
     if (pasteboard.image) {
-        NSArray *data = [NSArray array];
+        [_channel invokeMethod:@"startImagesPaste" arguments:@{}];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSArray *data = [NSArray array];
+            // Max number of images that should be sent to Flutter
+            NSUInteger maxImagesPasted = [_maxImagesPasted isKindOfClass:[NSNull class]] ? pasteboard.images.count : MIN([_maxImagesPasted integerValue], pasteboard.images.count);
 
-        // Max number of images that should be sent to Flutter
-        NSUInteger maxImagesPasted = [_maxImagesPasted isKindOfClass:[NSNull class]] ? pasteboard.images.count : [_maxImagesPasted integerValue];
-        for (NSUInteger index = 0; index < maxImagesPasted; index++) {
-            // turn it into UIImagePNGRepresentation
-            NSData *imageData = UIImagePNGRepresentation(pasteboard.images[index]);
-            // Convert to FlutterStandardTypedData
-            FlutterStandardTypedData *flutterData = [FlutterStandardTypedData typedDataWithBytes:imageData];
-            // Add to the array
-            data = [data arrayByAddingObject:flutterData];
-        }
-
-        [_channel invokeMethod:@"onImagesPasted" arguments:@{ @"data": data }];
+            /// Do the long operation here
+            for (NSUInteger index = 0; index < maxImagesPasted; index++) {
+                // turn it into UIImagePNGRepresentation
+                NSData *imageData = UIImagePNGRepresentation(pasteboard.images[index]);
+                // Convert to FlutterStandardTypedData
+                FlutterStandardTypedData *flutterData = [FlutterStandardTypedData typedDataWithBytes:imageData];
+                // Add to the array
+                data = [data arrayByAddingObject:flutterData];
+            }
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [_channel invokeMethod:@"onImagesPasted" arguments:@{ @"data": data }];
+            });
+        });
     } else {
         [super paste:sender];
     }

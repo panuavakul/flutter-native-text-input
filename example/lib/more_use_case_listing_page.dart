@@ -150,10 +150,10 @@ class _MoreUseCaseListingPageState extends State<MoreUseCaseListingPage> {
                   onTap: () => _onTap(context),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(100),
+              const Padding(
+                padding: EdgeInsets.all(100),
                 child: Center(
-                    child: Column(children: const [
+                    child: Column(children: [
                   Text(
                     'All done!',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

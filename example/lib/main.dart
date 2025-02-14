@@ -114,7 +114,8 @@ class _HomePageState extends State<HomePage> {
                 focusNode: _focusNode,
                 maxImagesPasted: 4,
                 alwayEnablePaste: true,
-                onImagesPasted: (data) {
+                onImagesPasted: (pasting) async {
+                  final data = await pasting;
                   setState(() {
                     imageData = data;
                   });
