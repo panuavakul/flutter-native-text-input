@@ -112,9 +112,7 @@ class _MoreUseCaseListingPageState extends State<MoreUseCaseListingPage> {
                   title: "Focusing or Unfocusing Text Input",
                   child: Column(
                     children: [
-                      FlatButton(
-                          color: Colors.blue,
-                          colorBrightness: Brightness.dark,
+                      TextButton(
                           child: const Text("Tap Me!"),
                           onPressed: () {
                             if (_focusNode.hasFocus) {
@@ -134,9 +132,7 @@ class _MoreUseCaseListingPageState extends State<MoreUseCaseListingPage> {
                   title: "Filling Text Programmatically",
                   child: Column(
                     children: [
-                      FlatButton(
-                        color: Colors.blue,
-                        colorBrightness: Brightness.dark,
+                      TextButton(
                         child: const Text("Tap Me!"),
                         onPressed: () => _changeTextController.text =
                             DateTime.now().toString(),
@@ -149,15 +145,15 @@ class _MoreUseCaseListingPageState extends State<MoreUseCaseListingPage> {
                     ],
                   )),
               DemoItem(
-                  title: "Recognizing Tap",
-                  child: NativeTextInput(
-                    onTap: () => _onTap(context),
-                  ),
+                title: "Recognizing Tap",
+                child: NativeTextInput(
+                  onTap: () => _onTap(context),
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(100),
+              const Padding(
+                padding: EdgeInsets.all(100),
                 child: Center(
-                    child: Column(children: const [
+                    child: Column(children: [
                   Text(
                     'All done!',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

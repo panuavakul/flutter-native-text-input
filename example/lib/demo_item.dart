@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 
+class MyWidget extends StatelessWidget {
+  const MyWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
 class DemoItem extends StatelessWidget {
   final String? title;
   final Widget? child;
 
-  DemoItem({
+  const DemoItem({
+    Key? key,
     this.title,
     this.child,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +30,11 @@ class DemoItem extends StatelessWidget {
                 color: Colors.black12,
                 child: Row(children: [
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Text(title!),
                   )
                 ])),
-            Padding(padding: EdgeInsets.all(8), child: child),
+            Padding(padding: const EdgeInsets.all(8), child: child),
           ],
         ));
   }

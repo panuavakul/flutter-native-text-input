@@ -1,12 +1,13 @@
 #import "NativeTextInput.h"
 #import "NativeTextInputDelegate.h"
+#import "MediaPastableTextView.h"
 
-@interface UITextView(Placeholder)
+@interface MediaPastableTextView(Placeholder)
 @property(nullable, nonatomic, copy) NSAttributedString *attributedPlaceholder;
 @end
 
 @implementation NativeInputField {
-    UITextView* _textView;
+    MediaPastableTextView* _textView;
     
     int64_t _viewId;
     FlutterMethodChannel* _channel;
@@ -29,7 +30,7 @@
         _viewId = viewId;
         _args = args;
         
-        _textView = [[UITextView alloc] initWithFrame:frame];
+        _textView = [[MediaPastableTextView alloc] initWithFrame:frame channel:_channel arguments:args];
         _textView.backgroundColor = UIColor.clearColor;
         _textView.keyboardAppearance = [self keyboardAppearanceFromString:args[@"keyboardAppearance"]];
         _textView.keyboardType = [self keyboardTypeFromString:args[@"keyboardType"]];

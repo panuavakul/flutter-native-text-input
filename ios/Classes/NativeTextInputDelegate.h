@@ -3,7 +3,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NativeTextInputDelegate : NSObject <UITextViewDelegate, UIGestureRecognizerDelegate>
+@interface NativeTextInputDelegate : NSObject <UITextViewDelegate, UIGestureRecognizerDelegate, UITextPasteDelegate>
 
 - (instancetype)initWithChannel:(FlutterMethodChannel*)channel arguments:(id _Nullable)args;
 - (UIColor *)fontColor;

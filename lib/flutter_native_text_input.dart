@@ -115,6 +115,9 @@ class NativeTextInput extends StatefulWidget {
     this.onEditingComplete,
     this.onSubmitted,
     this.onTap,
+    this.onImagesPasted,
+    this.alwayEnablePaste,
+    this.maxImagesPasted,
   }) : super(key: key);
 
   /// Controlling the text being edited
@@ -229,6 +232,23 @@ class NativeTextInput extends StatefulWidget {
   /// Default: null
   final VoidCallback? onTap;
 
+  /// Always enable paste button
+  ///
+  /// Not implemented yet on Android (Yet).
+  ///
+  /// Default: false
+  final bool? alwayEnablePaste;
+
+  /// Maxium image that will be passed to `onImagesPasted` callback
+  ///
+  /// Not implemented yet on Android (Yet).
+  ///
+  /// Default: null
+  final int? maxImagesPasted;
+
+  ///
+  final Future<void> Function(Future<List<Uint8List>> pasting)? onImagesPasted;
+
   @override
   State<StatefulWidget> createState() => _NativeTextInputState();
 }
@@ -279,6 +299,7 @@ class _NativeTextInputState extends State<NativeTextInput> {
   bool get _isMultiline => widget.maxLines == 0 || widget.maxLines > 1;
   double _lineHeight = 22.0;
   double _contentHeight = 22.0;
+  Completer<List<Uint8List>>? _imagePasteCompleter;
 
   @override
   void initState() {
@@ -425,6 +446,8 @@ class _NativeTextInputState extends State<NativeTextInput> {
       "keyboardAppearance": widget.iosOptions?.keyboardAppearance.toString(),
       "keyboardType": widget.keyboardType.toString(),
       "width": constraints.maxWidth,
+      "alwayEnablePaste": widget.alwayEnablePaste ?? false,
+      "maxImagesPasted": widget.maxImagesPasted,
     };
 
     if (widget.style != null && widget.style?.fontSize != null) {
@@ -482,7 +505,7 @@ class _NativeTextInputState extends State<NativeTextInput> {
       params = {
         ...params,
         "placeholderFontFamily":
-        widget.iosOptions?.placeholderStyle?.fontFamily.toString(),
+            widget.iosOptions?.placeholderStyle?.fontFamily.toString(),
       };
     }
 
@@ -546,6 +569,17 @@ class _NativeTextInputState extends State<NativeTextInput> {
 
       case "singleTapRecognized":
         _singleTapRecognized();
+
+      case "startImagesPaste":
+        widget.onImagesPasted?.call(_processImagesPaste());
+
+      case "onImagesPasted":
+        if (call.arguments["data"] case final List<Object?> data?) {
+          final result = data.whereType<Uint8List>().toList();
+          _imagePasteCompleter?.complete(result);
+          _imagePasteCompleter = null;
+          _imagePasteCompleter = null;
+        }
     }
 
     throw MissingPluginException(
@@ -605,6 +639,15 @@ class _NativeTextInputState extends State<NativeTextInput> {
   }
 
   void _singleTapRecognized() => widget.onTap?.call();
+
+  Future<List<Uint8List>> _processImagesPaste() async {
+    _imagePasteCompleter = Completer();
+    if (_imagePasteCompleter case final completer?) {
+      return completer.future;
+    } else {
+      throw Exception("Unexpected image paste completer is null");
+    }
+  }
 
   static const Duration _caretAnimationDuration = Duration(milliseconds: 100);
   static const Curve _caretAnimationCurve = Curves.fastOutSlowIn;

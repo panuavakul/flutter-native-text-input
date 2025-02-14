@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_text_input/flutter_native_text_input.dart';
 import 'package:flutter_native_text_input_example/demo_item.dart';
@@ -16,12 +17,20 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomePage());
+    return const MaterialApp(home: HomePage());
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final FocusNode _focusNode = FocusNode();
+  List<Uint8List>? imageData;
 
   _onChangeText(value) => debugPrint("_onChangeText: $value");
   _onSubmittedText(value) => debugPrint("_onSubmittedText: $value");
@@ -74,7 +83,7 @@ class HomePage extends StatelessWidget {
           ),
           DemoItem(
             title: 'NativeTextInput Example Usage',
-            child: Container(
+            child: SizedBox(
               height: 30,
               child: NativeTextInput(
                 decoration: BoxDecoration(
@@ -103,19 +112,30 @@ class HomePage extends StatelessWidget {
                 onChanged: _onChangeText,
                 onSubmitted: _onSubmittedText,
                 focusNode: _focusNode,
+                maxImagesPasted: 4,
+                alwayEnablePaste: true,
+                onImagesPasted: (pasting) async {
+                  final data = await pasting;
+                  setState(() {
+                    imageData = data;
+                  });
+                },
               ),
             ),
           ),
           Center(
-            child: FlatButton(
-                color: Colors.blue,
-                colorBrightness: Brightness.dark,
+            child: TextButton(
                 child: const Text("View More Use Cases"),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => MoreUseCaseListingPage()));
+                      builder: (_) => const MoreUseCaseListingPage()));
                 }),
           ),
+          if (imageData != null)
+            ...List.generate(
+              imageData!.length,
+              (index) => Image.memory(imageData![index]),
+            ),
         ],
       ),
     );
